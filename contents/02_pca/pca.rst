@@ -5,6 +5,10 @@ Principal Components Analysis (PCA)
 
 Principal components analysis (PCA) is one of the most useful techniques to visualise genetic diversity in a dataset. The methodology is not restricted to genetic data, but in general allows breaking down high-dimensional datasets to two or more dimensions for visualisation in a two-dimensional space.
 
+.. hint:: You can find the solution notebooks for all exercises in this and subsequent sessions here_
+
+.. _here: https://github.com/stschiff/compvar-workshop-docs/tree/master/supp
+
 Genotype Data
 -------------
 
