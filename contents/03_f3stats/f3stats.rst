@@ -24,7 +24,7 @@ It can be shown that if that statistics is negative, it provides unambiguous pro
 
 .. image:: f3_phylogeny.png
    :width: 300px
-   :height: 300px
+   :height: 250px
    :align: center
 
 Intuitively, an F3 statistics becomes negative if the allele frequency of the target population (C) is on average intermediate between the allele frequencies of A and B. Consider as an extreme example a genomic site where :math:`a=0, b=1` and :math:`c=0.5`. Then we have :math:`(c-a)(c-b)=-0.25`, which is negative. So if the entire statistics is negative, it suggests that in many positions, the allele frequency :math:`c` is indeed intermediate, suggesting admixture between the two sources. 
@@ -78,7 +78,7 @@ This output shows as first three columns the three populations A, B (sources) an
 The Z score is key: It gives the deviation of the f3 statistic from zero in units of the standard error. As general rule, a Z score of -3 or more suggests a significant rejection of the Null hypothesis that the statistic is not negative. In this case, all of the statistics are significantly negative, proving that Finnish have ancestral admixture of East and West Eurasian ancestry. Note that the statistics does not suggest *when* this admixture happened!
 
 F4 Statistics
-------------
+-------------
 
 A different way to test for admixture is by "F4 statistics" (or "D statistics" which is very similar), also introduced in `Patterson 2012`_. 
 
@@ -92,7 +92,7 @@ To understand the statistics, consider the following tree:
 
 .. image:: f4_phylogeny.png
    :width: 300px
-   :height: 300px
+   :height: 220px
    :align: center
 
 In this tree, without any additional admixture, the allele frequency difference between A and B should be completely independent from the allele frequency difference between C and D. In that case, F4(A, B; C, D) should be zero, or at least not statistically different from zero. However, if there was gene flow from C or D into A or B, the statistic should be different from zero. Specifically, if the statistic is significantly negative, it implies gene flow between either C and B, or D and A. If it is significantly positive, it implies gene flow between A and C, or B and D.
@@ -149,7 +149,7 @@ To get an intuition for this statistics, consider the following tree:
 
 .. image:: outgroupf3_phylogeny.png
    :width: 300px
-   :height: 300px
+   :height: 200px
    :align: center
 
 In this scenario, the statistic F3(A, B; C) measures the branch length from C to the common ancestor of A and B, coloured red. So this statistic is simply a measure of how closely two population A and B are related with each other, as measured from a distant outgroup. It is thus a similarity measure: The higher the statistic, the more genetically similar A and B are to one another.
@@ -195,7 +195,7 @@ which cycles through many populations from Europe, including the ancient individ
 
 .. admonition:: Exercise
 
-Copy this list into a file, and prepare a parameter file for running ``qp3Pop``, similar to the parameter file for admixture F3 statistics above, and run ``qp3Pop`` with that parameter file as above.
+  Copy this list into a file, and prepare a parameter file for running ``qp3Pop``, similar to the parameter file for admixture F3 statistics above, and run ``qp3Pop`` with that parameter file as above.
 
 You should find this (skipping header lines from the output)::
 
@@ -237,7 +237,7 @@ Now it's time to plot these results using python.
 
 .. admonition:: Exercise
 
-Copy the results (all lines from the output beginning with "results:") into a text file, open a Jupyter python3 notebook and load the text file into a pandas dataframe, using ``pd.read_csv(FILENAME, delim_whitespace=True, names=["dummy", "A", "B", "C", "F3", "StdErr", "Z", "SNPS"]``. View the resulting dataframe and make sure it looks correct. 
+  Copy the results (all lines from the output beginning with "results:") into a text file, open a Jupyter python3 notebook and load the text file into a pandas dataframe, using ``pd.read_csv(FILENAME, delim_whitespace=True, names=["dummy", "A", "B", "C", "F3", "StdErr", "Z", "SNPS"]``. View the resulting dataframe and make sure it looks correct. 
 
 A useful way to plot these results is by sorting them by the F3 statistics, and then plotting the test populations from left to right, beginning with the largest values. This code snippet should do the trick::
 
@@ -250,13 +250,13 @@ A useful way to plot these results is by sorting them by the F3 statistics, and 
 
 .. admonition:: Exercise
 
-Use the above code snippet to plot the Outgroup F3 data. Google the ``errorbar`` and ``yticks``  functions from matplotlib if you want to know how they works. 
+  Use the above code snippet to plot the Outgroup F3 data. Google the ``errorbar`` and ``yticks``  functions from matplotlib if you want to know how they works. 
 
 You should get something like this:
 
 .. image:: outgroupF3.png
-   :width: 300px
-   :height: 300px
+   :width: 400px
+   :height: 400px
    :align: center
 
 showing that, as expected, The ancient samples and modern Saami are most closely related to modern East Asians (as represented by Han) compared to many other Europeans.
@@ -267,8 +267,8 @@ Outgroup F3 Statistics Biplot
 The above plot shows an intriguing cline of differential relatedness to Han in many Europeans. For example, would you have guessed that Icelandics are closer to Han than Armenians are to Han? This is very surprising, and it shows that European ancestry has a complex relationship to East Asians. To understand this better, you can read `Patterson 2012`_, who makes some intriguing observations. Patterson and colleagues use Admixture F3 statistics and apply it to many populations world-wide. They summarise some population triples with the most negative F3 statistics in the following table:
 
 .. image:: Patterson_2012_table.png
-   :width: 300px
-   :height: 300px
+   :width: 400px
+   :height: 500px
    :align: center
 
 There are many interesting results here, but one of the most striking one is the finding of F3(Sardinian, Karitiana; French), which is highly significantly negative. This statistics implies that French are admixed between Sardinians and Karitiana, a Native American population from Brazil. How is that possible? We can of course rule out any recent Native American backflow into Europe.
@@ -276,8 +276,8 @@ There are many interesting results here, but one of the most striking one is the
 Patterson and colleagues explained this finding with hypothesising an ancient admixture event, from a Siberian population that contributed to both Europeans and to Native Americans. They termed that population the "Ancient North Eurasians (ANE)". The following admixture graph was suggested:
 
 .. image:: Patterson_2012_ANEfig.png
-   :width: 300px
-   :height: 300px
+   :width: 500px
+   :height: 250px
    :align: center
 
 As you can see, the idea is that modern Central Europeans, such as French, are admixed between Southern Europeans (Sardinians) and ANE. The Ancient North Eurasians are a classic example for a "Ghost" population, a population which does not exist anymore in unmixed form, and from which we have no direct individual representative.
@@ -289,8 +289,8 @@ Amazingly, two years after the publication of `Patterson 2012`_, the ANE ghost p
 The affinities are summarised nicely in this figure from `Raghavan et al.`_:
 
 .. image:: MA1_affinities.png
-   :width: 300px
-   :height: 300px
+   :width: 400px
+   :height: 250px
    :align: center
 
 OK, so we now know that ancestry related to Native Americans contributed to European countries. Could that possibly explain the affinity of our ancient samples and Saami to Han Chinese in some way? To test this, we will run the same Outgroup F3 statistics as above, but this time not with Han but with MA1 as test population. Specifically, we run the following population triples in ``qp3Pop``::
@@ -332,10 +332,56 @@ where ``MA1_HG.SG`` is the cryptic name for the MA1 genome from `Raghavan et al.
 
 .. admonition:: Exercise
 
-Follow the same protocol as above: Copy the list into a file, prepare a parameter file for ``qp3Pop`` with that population triple list, and run ``qp3Pop``. Copy the results (all lines beginning with "results:") into a file and load it into python via ``pd.read_csv()``.
+  Follow the same protocol as above: Copy the list into a file, prepare a parameter file for ``qp3Pop`` with that population triple list, and run ``qp3Pop``. Copy the results (all lines beginning with "results:") into a file and load it into python via ``pd.read_csv()``.
 
-To test in what way the relationship to Han Chinese is correlated with the relationship with MA1, we will now plot the two statistics against each other in a scatter plot. Here is the 
+To test in what way the relationship to Han Chinese is correlated with the relationship with MA1, we will now plot the two statistics against each other in a scatter plot. We first have to merge the two outgroup-F3 datasets together. Here is the code including loading (assuming that the two F3 dataframes are called ``outgroupf3dat_Han`` and ``outgroupf3dat_MA1``)::
 
+  outgroupf3dat_Han = pd.read_csv("/home/training/work/outgroupF3_results_Han.txt",
+                          delim_whitespace=True,
+                          names=["dummy", "A", "B", "C", "F3", "stderr", "Z", "nSNPs"])
+  outgroupf3dat_MA1 = pd.read_csv("/home/training/work/outgroupF3_results_MA1.txt",
+                          delim_whitespace=True,
+                          names=["dummy", "A", "B", "C", "F3", "stderr", "Z", "nSNPs"])
 
+  outgroupf3dat_merged = outgroupf3dat_Han.merge(outgroupf3dat_MA1, on="B", suffixes=("_Han", "_MA1"))
 
+.. admonition:: Exercise
+
+  run the above merge command and check that it worked by viewing the resulting dataframe.
+
+Finally, we can produce our bi-plot, using this code::
+
+  plt.figure(figsize=(10, 10))
+  plt.scatter(x=outgroupf3dat_merged["F3_Han"], y=outgroupf3dat_merged["F3_MA1"])
+  plt.xlabel("F3(Test, Han; Mbuti)");
+  plt.ylabel("F3(Test, MA1; Mbuti)");
+
+This should yield something like this:
+
+.. image:: outgroupf3_biplot_simple.png
+   :width: 400px
+   :height: 400px
+   :align: center
+
+This isn't very useful, however, as we cannot see which point is which population. We can use the annotation function from matplotlib to add text labels to each point::
+
+  plt.figure(figsize=(10, 10))
+  plt.scatter(x=outgroupf3dat_merged["F3_Han"], y=outgroupf3dat_merged["F3_MA1"])
+  for i, row in outgroupf3dat_merged.iterrows():
+      plt.annotate(row["B"], (row["F3_Han"], row["F3_MA1"]))
+  plt.xlabel("F3(Test, Han; Mbuti)");
+  plt.ylabel("F3(Test, MA1; Mbuti)");
+
+which should yield:
+
+.. image:: outgroupf3_biplot_annot.png
+   :width: 400px
+   :height: 400px
+   :align: center
+
+.. admonition:: Exercise
+
+  Create this plot with the code snippets above.
+
+The result shows that indeed the affinity to East Asians in the bulk of European contries can be explained by MA1-related ancestry. Most European countries have a linear relationship between their affinity to Han and their affinity to MA1. However, this is not true for our ancient samples from Fennoscandia and for modern Saami and Chuvash, who have extra affinity to Han not explained by MA1 (Lazaridis et al. 2014). 
 

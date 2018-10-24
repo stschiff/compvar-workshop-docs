@@ -31,28 +31,26 @@ Finally, you can create new Folders by clicking on *New* and then *Folder*. To r
 Notebooks
 ---------
 
-Bash Notebook
-*************
+Notebook can be loaded for different underlying kernels: bash, python 2, python3 and R. In this tutorial, we will use bash and python 3. Notebooks are useful to document interactive data analysis. It combines code cells with markdown cells. A markdown cell can contain text, math or headings. 
 
-Markdown
-********
-Headings, Subheadings, Text, italics and bold
+.. admonition:: Exercise
 
-Executing Code
-**************
+  Create a new bash notebook. Then select in the dropdown list above "Markdown". Type "# This is a heading" into the cell, press Shift-Enter and watch. Then type "This is text with *italic* and **bold** letters". To change the cells, double click into them.
 
-Python Notebooks
-****************
+Code cells can be used to write arbitrary code, execute it and get the results printed back into the Notebook.
 
-Plotting in Python Notebooks
-****************************
+.. admonition:: Exercise
 
-Reproducible Science
-********************
-
-(workflows depending on raw data and then with execution top->down)
-
-
-
-
+  A new empty Code cell should have been added to the Notebook in the last step. Click into this code cell and type ``ls``. This should output the current directories and files into the notebook. Into a new cell enter ``NAME="Hello World"`` and in the line below (same cell) ``echo $NAME``.
   
+You can use Bash notebooks to perform standard Unix tasks and run programs throughout this workshop. That way, you have always documented what you did.
+
+In Python 3 notebooks you can plot things: Create a new python3 notebook, and use this boilerplate code in the first cell::
+
+  %matplotlib inline
+  import matplotlib.pytplot as plt
+
+.. admonition:: Exercise
+
+  Create a simple plot using ``plt.plot([1, 2, 3], [5, 2, 6])``
+
