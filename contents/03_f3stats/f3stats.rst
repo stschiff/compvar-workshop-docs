@@ -1,235 +1,341 @@
 F3 Statistics
 =============
 
-.. F3 statistics are a useful analytical tool to understand population relationships. F3 statistics, just as F4 and F2 statistics measure allele frequency correlations between populations and were introduced by Nick Patterson in his `2012 paper`_
-..
-.. .. _2010 paper: http://www.genetics.org/content/early/2012/09/06/genetics.112.145037
-..
-.. F3 statistics are used for two purposes:
-.. i) as a test whether a target population (C) is admixed between two source populations (A and B), and
-.. ii) to measure shared drift between two test populations (A and B) from an outgroup (C). In this session we'll use the second of these use cases.
-..
-.. F3 statistics are in both cases defined as the product of allele frequency differences between population C to A and B, respectively::
-..
-..     $$F3=\langle(c-a)(c-b)\rangle$$
-..
-.. Here, $\langle\cdot\rangle$ denotes the average over all genotyped sites, and $a$, $b$ and $c$ denote the allele frequency for a given site in the three populations. Outgroup F3 statistics measure the amount of shared genetic drift between two populations from a common ancestor. In a phylogenetic tree connecting A, B and C, Outgroup F3 statistics measure the common branch length from the outgroup, here indicated in red:
-..
-.. .. image:: f3-tree.png
-..    :width: 300px
-..    :height: 300px
-..    :align: center
-..
-.. For computing F3 statistics including error bars, we will use the ``qp3Pop`` program from Admixtools_. You can have a look at the readme for that tool under ``/projects1/tools/adminxtools_3.0/README.3PopTest`` (the typo "adminx" is actually in the path).
-..
-.. .. _Admixtools: https://github.com/DReichLab/AdmixTools
-..
-.. The README and name of the tools is actually geared towards the first use case of F3 described above, the test for admixture. But since the formula is exactly the same, we can use the same tool for Outgroup F3 Statistics as well. One ingredient that you need is a list of population triples. This should be a file with three population names in each row, separated by space, e.g.::
-..
-..     JK2134 AA Yoruba
-..     JK2134 Abkhasian Yoruba
-..     JK2134 Adygei Yoruba
-..     JK2134 AG2 Yoruba
-..     JK2134 Albanian Yoruba
-..     JK2134 Aleut Yoruba
-..     JK2134 Algerian Yoruba
-..     JK2134 Algonquin Yoruba
-..     JK2134 Altai Yoruba
-..     JK2134 Altaian Yoruba
-..     ...
-..
-.. Note that in this case the first population is a single sample, the second loops through all HO populations, and the third one is a fixed outroup, here Yoruba. For Non-African population studies you can use "Mbuti" as outgroup, which is commonly used as an unbiased outgroup to all Non-Africans.
-..
-.. Analysing groups of samples (populations)
-.. -----------------------------------------
-..
-.. If you only analyse a single population, or a few, you can manually create lists of population triples. In that case, first locate the list of all Human Origins populations here: ``/projects1/users/schiffels/PublicData/HumanOriginsData.backup/HO_populations.txt``, and construct a file with the desired population triples using an awk-one-liner:
-..
-.. .. code-block:: bash
-..
-..     awk '{print "YourPopulation", $1, "Mbuti"}' $HO_populations > $OUT
-..
-.. Here, "YourPopulation" should be replaced by the population in you ``*.ind.txt`` file that you want to focus on, and "Mbuti" is the outgroup (pick another one if appropriate). Then, construct a parameter file like this: ::
-..
-..     genotypename:   /data/schiffels/GAworkshop/genotyping/MyProject.HO.eigenstrat.merged.geno.txt
-..     snpname:   /data/schiffels/GAworkshop/genotyping/MyProject.HO.eigenstrat.merged.snp.txt
-..     indivname:   /data/schiffels/GAworkshop/genotyping/MyProject.HO.eigenstrat.ind.txt
-..     popfilename:  <YOUR_POPULATION_TRIPLE_LIST>
-..
-.. and run it via
-..
-.. .. code-block:: bash
-..
-..     qp3Pop -p $PARAMETER_FILE > $OUT
-..
-.. Analysing individual samples
-.. ----------------------------
-..
-.. In my case, I selected 6 samples that showed low levels of contamination and chose to run them independently through F3 statistics. You may also choose to group test samples together into one population. In my case, I create 6 separate population lists like this:
-..
-.. .. code-block:: bash
-..
-..     #!/usr/bin/env bash
-..     OUTDIR=/data/schiffels/GAworkshop//data/schiffels/GAworkshop/f3stats
-..     mkdir -p $OUTDIR
-..     for SAMPLE in JK2134 JK2918 JK2888 JK2958 JK2911 JK2972; do
-..         HO_POPLIST=/projects1/users/schiffels/PublicData/HumanOriginsData.backup/HO_populations.txt
-..         OUT=$OUTDIR/$SAMPLE.f3stats.poplist.txt
-..         awk -v s=$SAMPLE '{print s, $1, "Mbuti"}' $HO_POPLIST > $OUT
-..     done
-..
-.. Here, the ``awk`` command loops through all rows in ``$HO_POPLIST`` and prints it into a new row with the sample name (assigned as variable ``s`` in awk through a command line option ``-v s=$SAMPLE``), and "Mbuti" in last position. If you follow a similar approach of looping through multiple samples, you should check the output poplist files that they are correct.
-..
-.. Similar to the ``mergeit`` and the ``smartpca`` programs we have already used, ``qp3Pop`` requires a parameter file as input. In my case, for the first sample it looks like this::
-..
-..     genotypename:   /data/schiffels/GAworkshop/genotyping/MyProject.HO.eigenstrat.merged.geno.txt
-..     snpname:   /data/schiffels/GAworkshop/genotyping/MyProject.HO.eigenstrat.merged.snp.txt
-..     indivname:   /data/schiffels/GAworkshop/genotyping/MyProject.HO.eigenstrat.ind.txt
-..     popfilename:  /data/schiffels/GAworkshop//data/schiffels/GAworkshop/f3stats/JK2134.f3stats.poplist.txt
-..
-.. Important: The ``qp3Pop`` program assumes that all population names in the ``popfilename`` are present in the ``*.ind.txt`` file of the input data, specifically in the third column of that file, which indicates the population. In my case, I intend to compute a separate statistic for each of my ancient samples individually, rather than an entire population. Therefore, I manually edited the ``*.ind.txt`` file an artificially assigned each of my individuals its own "population", which is simply called the same as the individual.
-..
-.. The first three lines of the parameter file specify the EIGENSTRAT data set, similar to what we put into the ``smartpca`` parameter file. The fourth parameter denotes the population list we generated above. In my case, I need to prepare 6 such parameter files and submit them all:
-..
-.. .. code-block:: bash
-..
-..     #!/usr/bin/env bash
-..
-..     INDIR=/data/schiffels/GAworkshop/genotyping
-..     OUTDIR=/data/schiffels/GAworkshop//data/schiffels/GAworkshop/f3stats
-..     for SAMPLE in JK2134 JK2918 JK2888 JK2958 JK2911 JK2972; do
-..         GENO=$INDIR/MyProject.HO.eigenstrat.merged.geno.txt
-..         SNP=$INDIR/MyProject.HO.eigenstrat.merged.snp.txt
-..         IND=MyProject.HO.eigenstrat.ind.txt
-..         POPLIST=$OUTDIR/$SAMPLE.f3stats.poplist.txt
-..
-..         PARAMSFILE=$OUTDIR/$SAMPLE.f3stats.qp3Pop.params.txt
-..         printf "genotypename:\t$GENO\n" > $PARAMSFILE
-..         printf "snpname:\t$SNP\n" >> $PARAMSFILE
-..         printf "indivname:\t$IND\n" >> $PARAMSFILE
-..         printf "popfilename:\t$POPLIST\n" >> $PARAMSFILE
-..
-..         LOG=$OUTDIR/$SAMPLE.qp3Pop.log
-..         OUT=$OUTDIR/$SAMPLE.qp3Pop.out
-..         sbatch --mem 4000 -o $LOG --wrap="qp3Pop -p $PARAMSFILE > $OUT"
-..     done
-..
-.. This should run for 10-20 minutes. When finished, transfer the resulting files to your laptop using ``scp``.
-..
-.. Plotting
-.. --------
-..
-.. The output from ``qp3Pop`` looks like this::
-..
-..     parameter file: /tmp/qp3Pop_wrapper35005211521595368
-..     ### THE INPUT PARAMETERS
-..     ##PARAMETER NAME: VALUE
-..     genotypename: /data/schiffels/MyProject/genotyping/MyProject.onlyTVFalse.HO.merged.geno
-..     snpname: /data/schiffels/MyProject/genotyping/MyProject.onlyTVFalse.HO.merged.snp
-..     indivname: /data/schiffels/MyProject/genotyping/MyProject.noGroups.onlyTVFalse.HO.merged.ind
-..     popfilename: /data/schiffels/MyProject/f3stats/JK2134.f3stats.poplist.txt
-..     ## qp3Pop version: 300
-..     nplist: 224
-..     number of blocks for block jackknife: 549
-..     snps: 593655
-..                           Source 1             Source 2               Target           f_3       std. err           Z    SNPs
-..      result:                JK2134                   AA               Yoruba      0.026824       0.001010      26.547   56353
-..      result:                JK2134            Abkhasian               Yoruba      0.147640       0.002229      66.231   56447
-..      result:                JK2134               Adygei               Yoruba      0.144566       0.002139      67.583   56467
-..      result:                JK2134                  AG2               Yoruba      0.139170       0.008287      16.794    9499
-..      result:                JK2134             Albanian               Yoruba      0.149385       0.002321      64.364   56435
-..      result:                JK2134                Aleut               Yoruba      0.134388       0.002287      58.768   56431
-..      result:                JK2134             Algerian               Yoruba      0.116380       0.002052      56.727   56416
-..      result:                JK2134            Algonquin               Yoruba      0.126845       0.002526      50.224   56396
-..      ...
-..
-.. The key rows are the ones starting with ``result:``. We can exploit that and select all relevant rows using ``grep``. In my case, I can even join the results across all samples using::
-..
-..     grep 'result:' *.qp3Pop.out
-..
-.. assuming that I am executing this inside the directory where I copied the per-sample result files. When you run this, the output looks like this::
-..
-..     JK2134.f3stats.txt: result:                JK2134                   AA               Yoruba      0.026824       0.001010      26.547   56353
-..     JK2134.f3stats.txt: result:                JK2134            Abkhasian               Yoruba      0.147640       0.002229      66.231   56447
-..     JK2134.f3stats.txt: result:                JK2134               Adygei               Yoruba      0.144566       0.002139      67.583   56467
-..     JK2134.f3stats.txt: result:                JK2134                  AG2               Yoruba      0.139170       0.008287      16.794    9499
-..     JK2134.f3stats.txt: result:                JK2134             Albanian               Yoruba      0.149385       0.002321      64.364   56435
-..     JK2134.f3stats.txt: result:                JK2134                Aleut               Yoruba      0.134388       0.002287      58.768   56431
-..     JK2134.f3stats.txt: result:                JK2134             Algerian               Yoruba      0.116380       0.002052      56.727   56416
-..     JK2134.f3stats.txt: result:                JK2134            Algonquin               Yoruba      0.126845       0.002526      50.224   56396
-..     JK2134.f3stats.txt: result:                JK2134                Altai               Yoruba      0.004572       0.003126       1.462   48731
-..     JK2134.f3stats.txt: result:                JK2134              Altaian               Yoruba      0.122992       0.002173      56.590   56409
-..     ...
-..
-.. As you see, we don't want columns 1 and 2. You can use ``awk`` to filter out only columns 3, 4, 5, 6, 7, 8::
-..
-..     grep 'result:' *.qp3Pop.out | awk '{print $3, $4, $5, $6, $7, $8, $9}' > all.qp3Pop.out
-..
-.. We can now again load this combined file into R, using::
-..
-..     f3dat = read.table("~/Data/GAworkshop/f3stats/all.qp3Pop.out",
-..                col.names=c("PopA", "PopB", "PopC", "F3", "StdErr", "Z", "SNPs"))
-..
-.. Have a look at this via ``head(f3dat)``.
-..
-.. Now, in my case, with multiple individuals tested, I first want to look at one particular individual separately. For that, I first create a subset of the data::
-..
-..     s = f3dat[f3dat$PopA == "JK2972",]
-..
-.. As a second step, we would like to order this in a descending order according to the F3 statistics. Try this::
-..
-..     head(s[order(-s$F3),])
-..
-.. which will first order ``s`` according to the ``F3`` column, and then print out only the first few lines with the highest F3 statistics for that individual. So go and save that new order via::
-..
-..     sOrdered = s[order(-s$F3),]
-..
-.. OK, so we now want to plot those highest values including error bars. For that we'll need the ``errbar`` function which first has to be installed. Install the package "Hmisc"::
-..
-..     install.packages("Hmisc")
-..
-.. from a suitable mirror (for me, the Germany mirror didn't work, I succeeded with the Belgian one).
-..
-.. Next, activate that package via ``library(Hmisc)``.
-..
-.. You should now be able to view the help for ``errbar`` by typing ``?errbar``.
-..
-.. OK, let's now make a plot::
-..
-..     errbar(1:40, sOrdered$F3[1:40],
-..            (sOrdered$F3+sOrdered$StdErr)[1:40],
-..            (sOrdered$F3-sOrdered$StdErr)[1:40], pch=20, las=2, cex.axis=0.4, xaxt='n',
-..            xlab="population", ylab="F3")
-..     axis(1, at=1:40, labels=sOrdered$PopB[1:40], las=2, cex.axis=0.6)
-..
-.. which should yield:
-..
-.. .. image:: f3singleSample.png
-..    :width: 400px
-..    :height: 400px
-..    :align: center
-..
-..
-.. Here is the entire R program:
-..
-.. .. code-block:: R
-..
-..     f3dat = read.table("~/Data/GAworkshop/f3stats/all.qp3Pop.out",
-..                col.names=c("PopA", "PopB", "PopC", "F3", "StdErr", "Z", "SNPs"))
-..     s = f3dat[f3dat$PopA == "JK2972",]
-..     sOrdered = s[order(-s$F3),]
-..     errbar(1:40, sOrdered$F3[1:40],
-..            (sOrdered$F3+sOrdered$StdErr)[1:40],
-..            (sOrdered$F3-sOrdered$StdErr)[1:40], pch=20, las=2, cex.axis=0.4, xaxt='n',
-..            xlab="population", ylab="F3")
-..     axis(1, at=1:40, labels=sOrdered$PopB[1:40], las=2, cex.axis=0.6)
-..
-.. You can plot this for other individuals/populations by replacing the subset command (``s=...``) with another selected individual/population.
-..
-.. Finally, if you want to print this into a PDF, you can simply surround the above commands by::
-..
-..     pdf("myPDF.pdf")
-..     ...
-..     dev.off()
-..
-.. which will produce a PDF with the graph in it.
+F3 statistics are a useful analytical tool to understand population relationships. F3 statistics, just as F4 and F2 statistics measure allele frequency correlations between populations and were introduced by Nick Patterson in his `Patterson 2012`_
+
+.. _Patterson 2012: http://www.genetics.org/content/early/2012/09/06/genetics.112.145037
+
+F3 statistics are used for two purposes:
+i) as a test whether a target population (C) is admixed between two source populations (A and B), and
+ii) to measure shared drift between two test populations (A and B) from an outgroup (C). 
+
+F3 statistics are in both cases defined as the product of allele frequency differences between population C to A and B, respectively:
+
+.. math::
+
+    F3(A, B; C)=\langle(c-a)(c-b)\rangle
+
+Here, :math:`\langle\cdot\rangle` denotes the average over all genotyped sites, and :math:`a, b` and :math:`c` denote the allele frequency for a given site in the three populations :math:`A, B` and :math:`C`. 
+
+Admixture F3 Statistics
+-----------------------
+
+It can be shown that if that statistics is negative, it provides unambiguous proof that population C is admixed between populations A and B, as in the following phylogeny (taken from Figure 1 from `Patterson 2012`_):
+
+.. image:: f3_phylogeny.png
+   :width: 300px
+   :height: 300px
+   :align: center
+
+Intuitively, an F3 statistics becomes negative if the allele frequency of the target population (C) is on average intermediate between the allele frequencies of A and B. Consider as an extreme example a genomic site where :math:`a=0, b=1` and :math:`c=0.5`. Then we have :math:`(c-a)(c-b)=-0.25`, which is negative. So if the entire statistics is negative, it suggests that in many positions, the allele frequency :math:`c` is indeed intermediate, suggesting admixture between the two sources. 
+
+.. note:: If an F3 statistics is *not* negative, it does *not* proof that there is no admixture!
+
+We will use this statistics to test if Finnish are admixed between East and West, using different Eastern and Western sources. In the West, we use French, Icelandic, Lithuanian and Norwegian as source, and in the East we use Nganasan and one of the populations analysed in this workshop, *Bolshoy Oleni Ostrov*, a 3,500 year old group from the Northern Russian Kola-peninsula. 
+
+We use the software ``qp3Pop`` from AdmixTools_, which similar to ``smartpca`` takes a parameter file::
+
+  genotypename:   input genotype file (in eigenstrat format)
+  snpname:        input snp file      (in eigenstrat format)
+  indivname:      input indiv file    (in eigenstrat format)
+  popfilename:    a file containing rows with three populations on each line A, B and C.
+  inbreed: YES
+
+.. _AdmixTools: https://github.com/DReichLab/AdmixTools
+
+Here, the last option is necessary if we are analysing pseudo-diploid ancient data (which is the case here).
+
+To prepare the ``popfilename``, open a new file using Jupyter and enter::
+
+  Nganasan French Finnish 
+  Nganasan Icelandic Finnish 
+  Nganasan Lithuanian Finnish 
+  Nganasan Norwegian Finnish 
+  BolshoyOleniOstrov French Finnish 
+  BolshoyOleniOstrov Icelandic Finnish 
+  BolshoyOleniOstrov Lithuanian Finnish 
+  BolshoyOleniOstrov Norwegian Finnish
+
+
+.. admonition:: Exercise
+
+  Prepare the parameter file with the input data as in the PCA session (see :ref:`PCA_section`) and then run ``qp3pop -p PARAMETER_FILE``, where ``PARAMETERFILE`` should be replaced by your parameter file name. This will take about 3 minutes (see the ``~/share/solutions/bash_commands`` notebook if you need a hint).
+
+The results are in the output that you can view in the Notebook. The crucial bit should look like this::
+
+                       Source 1             Source 2               Target           f_3       std. err           Z    SNPs
+  result:              Nganasan               French              Finnish     -0.004539       0.000510      -8.894  442567
+  result:              Nganasan            Icelandic              Finnish     -0.005297       0.000563      -9.404  427954
+  result:              Nganasan           Lithuanian              Finnish     -0.005062       0.000590      -8.574  426231
+  result:              Nganasan            Norwegian              Finnish     -0.004744       0.000569      -8.332  428161
+  result:    BolshoyOleniOstrov               French              Finnish     -0.002814       0.000444      -6.341  402958
+  result:    BolshoyOleniOstrov            Icelandic              Finnish     -0.002590       0.000486      -5.323  386418
+  result:    BolshoyOleniOstrov           Lithuanian              Finnish     -0.001523       0.000536      -2.840  384134
+  result:    BolshoyOleniOstrov            Norwegian              Finnish     -0.001553       0.000502      -3.092  386203
+
+This output shows as first three columns the three populations A, B (sources) and C (target). Then the f3 statistics, which is negative in all cases tested here, a standard error, a Z score and the number of SNPs involved in the statistics.
+
+The Z score is key: It gives the deviation of the f3 statistic from zero in units of the standard error. As general rule, a Z score of -3 or more suggests a significant rejection of the Null hypothesis that the statistic is not negative. In this case, all of the statistics are significantly negative, proving that Finnish have ancestral admixture of East and West Eurasian ancestry. Note that the statistics does not suggest *when* this admixture happened!
+
+F4 Statistics
+------------
+
+A different way to test for admixture is by "F4 statistics" (or "D statistics" which is very similar), also introduced in `Patterson 2012`_. 
+
+F4 statistics are also defined in terms of correlations of allele frequency differences, similarly to F3 statistics (see above), but involving four different populations, not just three. Specifically we define
+
+.. math::
+
+    F4(A, B; C, D)=\langle(a-b)(c-d)\rangle.
+	
+To understand the statistics, consider the following tree:
+
+.. image:: f4_phylogeny.png
+   :width: 300px
+   :height: 300px
+   :align: center
+
+In this tree, without any additional admixture, the allele frequency difference between A and B should be completely independent from the allele frequency difference between C and D. In that case, F4(A, B; C, D) should be zero, or at least not statistically different from zero. However, if there was gene flow from C or D into A or B, the statistic should be different from zero. Specifically, if the statistic is significantly negative, it implies gene flow between either C and B, or D and A. If it is significantly positive, it implies gene flow between A and C, or B and D.
+
+The way this statistic is often used, is to put a divergent outgroup as population A, for which we know for sure that there was no admixture into either C or D. With this setup, we can then test for gene flow between B and D (if the statistic is positive), or B and C (if it is negative).
+
+Here, we can use this statistic to test for East Asian admixture in Finns, similarly to the test using Admixture F3 statistics above. We will use the ``qpDstat`` program from AdmixTools_ for that. We need to again prepare a population list file, this time with four populations (A, B, C, D). I suggest you open a new file and fill it with::
+
+  Mbuti Nganasan French Finnish 
+  Mbuti Nganasan Icelandic Finnish 
+  Mbuti Nganasan Lithuanian Finnish 
+  Mbuti Nganasan Norwegian Finnish 
+  Mbuti BolshoyOleniOstrov French Finnish 
+  Mbuti BolshoyOleniOstrov Icelandic Finnish 
+  Mbuti BolshoyOleniOstrov Lithuanian Finnish 
+  Mbuti BolshoyOleniOstrov Norwegian Finnish
+  
+
+You can then use this file again in a parameter file, similar to the one prepared for ``qp3Pop`` above::
+
+  genotypename:   input genotype file (in eigenstrat format)
+  snpname:        input snp file      (in eigenstrat format)
+  indivname:      input indiv file    (in eigenstrat format)
+  popfilename:    a file containing rows with three populations on each line A, B and C.
+  f4mode: YES
+
+Note that you cannot give the "inbreed" option here. 
+
+.. admonition:: Exercise
+
+  Prepare the parameter file as suggested above and then run ``qpDstat -p PARAMETER_FILE``, where ``PARAMETERFILE`` should be replaced by your parameter file name. This will take about 3 minutes (see the ``~/share/solutions/bash_commands`` notebook if you need a hint).
+
+The results should be (skipping some header lines)::
+
+  result:      Mbuti   Nganasan     French    Finnish      0.002363     19.016   29254  27852 593124 
+  result:      Mbuti   Nganasan  Icelandic    Finnish      0.001721     11.926   28915  27894 593124 
+  result:      Mbuti   Nganasan Lithuanian    Finnish      0.001368      9.664   28745  27933 593124 
+  result:      Mbuti   Nganasan  Norwegian    Finnish      0.001685     11.663   28933  27934 593124 
+  result:      Mbuti BolshoyOleniOstrov     French    Finnish      0.001962     16.737   27249  26175 547486 
+  result:      Mbuti BolshoyOleniOstrov  Icelandic    Finnish      0.001084      7.776   26876  26282 547486 
+  result:      Mbuti BolshoyOleniOstrov Lithuanian    Finnish      0.000554      3.942   26683  26380 547486 
+  result:      Mbuti BolshoyOleniOstrov  Norwegian    Finnish      0.000952      6.707   26873  26351 547486
+
+Here, the key columns are columns 2, 3, 4 and 5, denoting A, B, C and D, and column 6 and 7, which denote the F4 statistic and the Z score, measuring significance in difference from zero.
+
+As you can see, in all cases, the Z score is positive and larger than 3, indicating a significant deviation from zero, and implying gene flow between Nganasan and Finnish, and BolshoyOleniOstrov and Finnish, when compared to French, Icelandic, Lithuanian or Norwegian.
+
+Outgroup F3 Statistics
+----------------------
+
+Outgroup F3 statistics are a special case how to use F3 statistics. The definition is the same as for Admixture F3 statistics, but instead of a target C and two source populations A and B, one now gives an outgroup C and two test populations A and B.
+
+To get an intuition for this statistics, consider the following tree:
+
+.. image:: outgroupf3_phylogeny.png
+   :width: 300px
+   :height: 300px
+   :align: center
+
+In this scenario, the statistic F3(A, B; C) measures the branch length from C to the common ancestor of A and B, coloured red. So this statistic is simply a measure of how closely two population A and B are related with each other, as measured from a distant outgroup. It is thus a similarity measure: The higher the statistic, the more genetically similar A and B are to one another.
+
+We can use this statistic to measure for example the the genetic affinity to East Asia, by performing the statistic F3(Han, X; Mbuti), where Mbuti is a distant African population and acts as outgroup here, Han denote Han Chinese, and X denotes various European populations that we want to test.
+
+You need to start, again, by preparing a list of population triples to be measured. I suggest the following list::
+
+  Han Chuvash Mbuti 
+  Han Albanian Mbuti 
+  Han Armenian Mbuti 
+  Han Bulgarian Mbuti 
+  Han Czech Mbuti 
+  Han Druze Mbuti 
+  Han English Mbuti 
+  Han Estonian Mbuti 
+  Han Finnish Mbuti 
+  Han French Mbuti 
+  Han Georgian Mbuti 
+  Han Greek Mbuti 
+  Han Hungarian Mbuti 
+  Han Icelandic Mbuti 
+  Han Italian_North Mbuti 
+  Han Italian_South Mbuti 
+  Han Lithuanian Mbuti 
+  Han Maltese Mbuti 
+  Han Mordovian Mbuti 
+  Han Norwegian Mbuti 
+  Han Orcadian Mbuti 
+  Han Russian Mbuti 
+  Han Sardinian Mbuti 
+  Han Scottish Mbuti 
+  Han Sicilian Mbuti 
+  Han Spanish_North Mbuti 
+  Han Spanish Mbuti 
+  Han Ukrainian Mbuti 
+  Han Levanluhta Mbuti 
+  Han BolshoyOleniOstrov Mbuti 
+  Han ChalmnyVarre Mbuti 
+  Han Saami.DG Mbuti
+
+which cycles through many populations from Europe, including the ancient individuals from Chalmny Varre, Bolshoy Oleni Ostrov and Levänluhta.
+
+.. admonition:: Exercise
+
+Copy this list into a file, and prepare a parameter file for running ``qp3Pop``, similar to the parameter file for admixture F3 statistics above, and run ``qp3Pop`` with that parameter file as above.
+
+You should find this (skipping header lines from the output)::
+
+                        Source 1             Source 2               Target           f_3       std. err           Z    SNPs
+  result:                   Han              Chuvash                Mbuti      0.233652       0.002072     112.782  502678
+  result:                   Han             Albanian                Mbuti      0.215629       0.002029     106.291  501734
+  result:                   Han             Armenian                Mbuti      0.213724       0.001963     108.882  504370
+  result:                   Han            Bulgarian                Mbuti      0.216193       0.001979     109.266  504310
+  result:                   Han                Czech                Mbuti      0.218060       0.002002     108.939  504089
+  result:                   Han                Druze                Mbuti      0.209551       0.001919     109.205  510853
+  result:                   Han              English                Mbuti      0.216959       0.001973     109.954  504161
+  result:                   Han             Estonian                Mbuti      0.220730       0.002019     109.332  503503
+  result:                   Han              Finnish                Mbuti      0.223447       0.002044     109.345  502217
+  result:                   Han               French                Mbuti      0.216623       0.001969     110.012  509613
+  result:                   Han             Georgian                Mbuti      0.214295       0.001935     110.721  503598
+  result:                   Han                Greek                Mbuti      0.215203       0.001984     108.465  507475
+  result:                   Han            Hungarian                Mbuti      0.217894       0.001999     109.004  507409
+  result:                   Han            Icelandic                Mbuti      0.218683       0.002015     108.553  504655
+  result:                   Han        Italian_North                Mbuti      0.215332       0.001978     108.854  507589
+  result:                   Han        Italian_South                Mbuti      0.211787       0.002271      93.265  492400
+  result:                   Han           Lithuanian                Mbuti      0.219615       0.002032     108.098  503681
+  result:                   Han              Maltese                Mbuti      0.210359       0.001956     107.542  503985
+  result:                   Han            Mordovian                Mbuti      0.223469       0.002008     111.296  503441
+  result:                   Han            Norwegian                Mbuti      0.218873       0.002023     108.197  504621
+  result:                   Han             Orcadian                Mbuti      0.217773       0.002014     108.115  504993
+  result:                   Han              Russian                Mbuti      0.223993       0.001995     112.274  506525
+  result:                   Han            Sardinian                Mbuti      0.213230       0.001980     107.711  508413
+  result:                   Han             Scottish                Mbuti      0.218489       0.002039     107.145  499784
+  result:                   Han             Sicilian                Mbuti      0.212272       0.001975     107.486  505477
+  result:                   Han        Spanish_North                Mbuti      0.215885       0.002029     106.383  500853
+  result:                   Han              Spanish                Mbuti      0.213869       0.001975     108.297  513648
+  result:                   Han            Ukrainian                Mbuti      0.218716       0.002007     108.950  503981
+  result:                   Han           Levanluhta                Mbuti      0.236252       0.002383      99.123  263049
+  result:                   Han   BolshoyOleniOstrov                Mbuti      0.247814       0.002177     113.849  457102
+  result:                   Han         ChalmnyVarre                Mbuti      0.233499       0.002304     101.345  366220
+  result:                   Han             Saami.DG                Mbuti      0.236198       0.002274     103.852  489038
+  
+Now it's time to plot these results using python.
+
+.. admonition:: Exercise
+
+Copy the results (all lines from the output beginning with "results:") into a text file, open a Jupyter python3 notebook and load the text file into a pandas dataframe, using ``pd.read_csv(FILENAME, delim_whitespace=True, names=["dummy", "A", "B", "C", "F3", "StdErr", "Z", "SNPS"]``. View the resulting dataframe and make sure it looks correct. 
+
+A useful way to plot these results is by sorting them by the F3 statistics, and then plotting the test populations from left to right, beginning with the largest values. This code snippet should do the trick::
+
+  d=f3dat_han.sort_values(by="F3")
+  y = range(len(d))
+  plt.figure(figsize=(6, 8))
+  plt.errorbar(d["F3"], y, xerr=d["stderr"], fmt='o')
+  plt.yticks(y, d["B"]);
+  plt.xlabel("F3(Han, Test; Mbuti)");
+
+.. admonition:: Exercise
+
+Use the above code snippet to plot the Outgroup F3 data. Google the ``errorbar`` and ``yticks``  functions from matplotlib if you want to know how they works. 
+
+You should get something like this:
+
+.. image:: outgroupF3.png
+   :width: 300px
+   :height: 300px
+   :align: center
+
+showing that, as expected, The ancient samples and modern Saami are most closely related to modern East Asians (as represented by Han) compared to many other Europeans.
+
+Outgroup F3 Statistics Biplot
+-----------------------------
+
+The above plot shows an intriguing cline of differential relatedness to Han in many Europeans. For example, would you have guessed that Icelandics are closer to Han than Armenians are to Han? This is very surprising, and it shows that European ancestry has a complex relationship to East Asians. To understand this better, you can read `Patterson 2012`_, who makes some intriguing observations. Patterson and colleagues use Admixture F3 statistics and apply it to many populations world-wide. They summarise some population triples with the most negative F3 statistics in the following table:
+
+.. image:: Patterson_2012_table.png
+   :width: 300px
+   :height: 300px
+   :align: center
+
+There are many interesting results here, but one of the most striking one is the finding of F3(Sardinian, Karitiana; French), which is highly significantly negative. This statistics implies that French are admixed between Sardinians and Karitiana, a Native American population from Brazil. How is that possible? We can of course rule out any recent Native American backflow into Europe.
+
+Patterson and colleagues explained this finding with hypothesising an ancient admixture event, from a Siberian population that contributed to both Europeans and to Native Americans. They termed that population the "Ancient North Eurasians (ANE)". The following admixture graph was suggested:
+
+.. image:: Patterson_2012_ANEfig.png
+   :width: 300px
+   :height: 300px
+   :align: center
+
+As you can see, the idea is that modern Central Europeans, such as French, are admixed between Southern Europeans (Sardinians) and ANE. The Ancient North Eurasians are a classic example for a "Ghost" population, a population which does not exist anymore in unmixed form, and from which we have no direct individual representative.
+
+Amazingly, two years after the publication of `Patterson 2012`_, the ANE ghost population was actually found: `Raghavan et al.`_ and colleagues, in 2014, published a paper called "Upper Palaeolithic Siberian genome reveals dual ancestry of Native Americans". A 24,000 year old boy (called MA1) from the site of "Mal'ta" in Siberia was shown to have close genetic affinity with both Europeans and in particular Native Americans, just as proposed in `Patterson 2012`_.
+
+.. _Raghavan et al.: https://www.nature.com/articles/nature12736
+
+The affinities are summarised nicely in this figure from `Raghavan et al.`_:
+
+.. image:: MA1_affinities.png
+   :width: 300px
+   :height: 300px
+   :align: center
+
+OK, so we now know that ancestry related to Native Americans contributed to European countries. Could that possibly explain the affinity of our ancient samples and Saami to Han Chinese in some way? To test this, we will run the same Outgroup F3 statistics as above, but this time not with Han but with MA1 as test population. Specifically, we run the following population triples in ``qp3Pop``::
+
+  MA1_HG.SG Chuvash Mbuti 
+  MA1_HG.SG Albanian Mbuti 
+  MA1_HG.SG Armenian Mbuti 
+  MA1_HG.SG Bulgarian Mbuti 
+  MA1_HG.SG Czech Mbuti 
+  MA1_HG.SG Druze Mbuti 
+  MA1_HG.SG English Mbuti 
+  MA1_HG.SG Estonian Mbuti 
+  MA1_HG.SG Finnish Mbuti 
+  MA1_HG.SG French Mbuti 
+  MA1_HG.SG Georgian Mbuti 
+  MA1_HG.SG Greek Mbuti 
+  MA1_HG.SG Hungarian Mbuti 
+  MA1_HG.SG Icelandic Mbuti 
+  MA1_HG.SG Italian_North Mbuti 
+  MA1_HG.SG Italian_South Mbuti 
+  MA1_HG.SG Lithuanian Mbuti 
+  MA1_HG.SG Maltese Mbuti 
+  MA1_HG.SG Mordovian Mbuti 
+  MA1_HG.SG Norwegian Mbuti 
+  MA1_HG.SG Orcadian Mbuti 
+  MA1_HG.SG Russian Mbuti 
+  MA1_HG.SG Sardinian Mbuti 
+  MA1_HG.SG Scottish Mbuti 
+  MA1_HG.SG Sicilian Mbuti 
+  MA1_HG.SG Spanish_North Mbuti 
+  MA1_HG.SG Spanish Mbuti 
+  MA1_HG.SG Ukrainian Mbuti 
+  MA1_HG.SG Levanluhta Mbuti 
+  MA1_HG.SG BolshoyOleniOstrov Mbuti 
+  MA1_HG.SG ChalmnyVarre Mbuti 
+  MA1_HG.SG Saami.DG Mbuti
+  
+where ``MA1_HG.SG`` is the cryptic name for the MA1 genome from `Raghavan et al.`_.
+
+.. admonition:: Exercise
+
+Follow the same protocol as above: Copy the list into a file, prepare a parameter file for ``qp3Pop`` with that population triple list, and run ``qp3Pop``. Copy the results (all lines beginning with "results:") into a file and load it into python via ``pd.read_csv()``.
+
+To test in what way the relationship to Han Chinese is correlated with the relationship with MA1, we will now plot the two statistics against each other in a scatter plot. Here is the 
+
+
+
+

@@ -19,9 +19,9 @@ This is the documentation for the 2018 Workshop delivered at the `Next Generatio
    contents/01_setting_up/setting_up
    contents/02_pca/pca
    contents/03_f3stats/f3stats
-   contents/04_dstats/dstats
-   contents/05_alder/alder
-   contents/06_msmc/msmc
+   .. contents/04_dstats/dstats
+   .. contents/05_alder/alder
+   .. contents/06_msmc/msmc
 
 
 Indices and tables

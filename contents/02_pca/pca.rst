@@ -1,3 +1,5 @@
+.. _PCA_section:
+
 Principal Components Analysis (PCA)
 ===================================
 
@@ -21,11 +23,11 @@ The data is laid out as a matrix, with columns indicating individuals, and rows 
 
 .. admonition:: Exercise
 
-  Explore the three files used in the workshop. They are located unser ``~/share/genotype_data``. You can use the bash terminal, and use ``less -S <FILENAME>`` to view each file and skim through it to get a feeling for the data. Alternatively, you can create use a Bash notebook, use ``cd`` as above, and then use the unix tools ``head`` in combination with ``cut`` to show portions of the files (see solutions notebook ``02_pca_bash``).
+  Explore the three files used in the workshop. They are located unser ``~/share/genotype_data``. You can use the bash terminal, and use ``less -S <FILENAME>`` to view each file and skim through it to get a feeling for the data. Alternatively, you can create use a Bash notebook, use ``cd`` as above, and then use the unix tools ``head`` in combination with ``cut`` to show portions of the files (see solutions notebook ``bash_commands``).
 
 .. admonition:: Exercise
 
-  Confirm that there are 3,902 individuals in the dataset. (Advanced) Count how many different populations there are. Hint: You can use the Unix tools ``awk '{print $3}'``, ``sort`` and ``uniq -c`` to achieve that (see solutions notebook ``02_pca_bash``).
+  Confirm that there are 1,340 individuals in the dataset. (Advanced) Count how many different populations there are. Hint: You can use the Unix tools ``awk '{print $3}'``, ``sort`` and ``uniq -c`` to achieve that (see solutions notebook ``bash_commands``).
 
 How PCA works
 -------------
@@ -46,8 +48,9 @@ For actually running the analysis, we use a software called ``smartPCA`` from th
   evaloutname: <OUT_FILE>.eval
   poplistname: <POPULATION_LIST_FILE>.txt
   lsqproject: YES
+  numoutevec: 4
 
-Here, the first three parameters specify the input genotype files, as discussed above. The next two rows specify two output file names, typically with ending ``*.evec`` and ``*.eval``. The parameter line beginning with ``poplistname`` contains a file with a list of populations used for calculating the principal components (see below). The last option, ``lsqproject`` is important for applications including ancient DNA with lots of missing data, which I will not elaborate on. For the purpose of this workshop, you should use ``lsqproject: YES``.
+Here, the first three parameters specify the input genotype files, as discussed above. The next two rows specify two output file names, typically with ending ``*.evec`` and ``*.eval``. The parameter line beginning with ``poplistname`` contains a file with a list of populations used for calculating the principal components (see below). The option ``lsqproject`` is important for applications including ancient DNA with lots of missing data, which I will not elaborate on. For the purpose of this workshop, you should use ``lsqproject: YES``. The last option ``numoutevec`` specifies the number of principal components that we compute.
 
 Population lists vs. Projection
 -------------------------------
@@ -72,7 +75,7 @@ Running smartPCA
 
 Now go ahead and prepare a parameter file according to the layout described above...
 
-.. hint:: Put all filenames with their absolute path into the parameter file. To prepare the parameter file, you can use the so-called "Heredoc" syntax in bash, if you are familiar with it (as done in the solution notebook ``02_pca_bash``). Alternatively, you can use the Jupyter file editor to create the parameter file.
+.. hint:: Put all filenames with their absolute path into the parameter file. To prepare the parameter file, you can use the so-called "Heredoc" syntax in bash, if you are familiar with it (as done in the solution notebook ``bash_commands``). Alternatively, you can use the Jupyter file editor to create the parameter file.
 
 ... and run smartPCA using the command ``smartpca -p <PARAMS_FILE>``
 
@@ -191,7 +194,7 @@ Of course, until now we haven't yet included any of the actual ancient test indi
 
 .. admonition:: Exercise
 
-  Add two ancient populations to this plot, named "Levanluhta", "JK2068" (the third individual from Levanluhta with different ancestry) and "BolshoyOleniOstrov", using the same technique of selecting populations from the big dataset and plotting them as used in case of the modern populations. Use "black" as colour, and different symbols for each additional population. While you're at it, go ahead and also add the population called "Saami.DG". 
+  Add two ancient populations to this plot, named "Levanluhta", "JK2065" (the third individual from Levanluhta with different ancestry) and "BolshoyOleniOstrov", using the same technique of selecting populations from the big dataset and plotting them as used in case of the modern populations. Use "black" as colour, and different symbols for each additional population. While you're at it, go ahead and also add the population called "Saami.DG". 
   
 Finally, we are going to learn something about deeper European history, by also adding some Neolithic and Mesolithic populations:
 
@@ -206,5 +209,5 @@ The final plot should look like this:
 
 .. image:: pcaWithAncients.png
     :width: 500px
-    :height: 500px
+    :height: 300px
     :align: center
