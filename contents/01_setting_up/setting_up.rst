@@ -35,7 +35,7 @@ Notebook can be loaded for different underlying kernels: bash, python 2, python3
 
 .. admonition:: Exercise
 
-  Create a new bash notebook. Then select in the dropdown list above "Markdown". Type "# This is a heading" into the cell, press Shift-Enter and watch. Then type "This is text with *italic* and **bold** letters". To change the cells, double click into them.
+  Create a new bash notebook. Then select in the dropdown list above "Markdown". Type ``# This is a heading`` into the cell, press Shift-Enter and watch. Then type ``This is text with \*italic\* and \*\*bold\*\* letters``. To change the cells, double click into them.
 
 Code cells can be used to write arbitrary code, execute it and get the results printed back into the Notebook.
 
@@ -48,7 +48,7 @@ You can use Bash notebooks to perform standard Unix tasks and run programs throu
 In Python 3 notebooks you can plot things: Create a new python3 notebook, and use this boilerplate code in the first cell::
 
   %matplotlib inline
-  import matplotlib.pytplot as plt
+  import matplotlib.pyplot as plt
 
 .. admonition:: Exercise
 
