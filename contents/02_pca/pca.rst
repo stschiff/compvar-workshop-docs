@@ -216,3 +216,11 @@ The final plot should look like this:
     :width: 500px
     :height: 300px
     :align: center
+
+You can carry out similar commands to plot the All Eurasia case, which should look like this:
+
+
+.. image:: pcaAllEurasia.png
+    :width: 500px
+    :height: 300px
+    :align: center
