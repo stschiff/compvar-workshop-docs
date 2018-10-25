@@ -110,35 +110,35 @@ I suggest that you start a new Jupyter Notebook with the Python3 language, and l
 
 Let's have a look at the main results file from ``smartpca``, the ``*.evec`` file, for example by going to the terminal and running ``head EVEC_FILE``, where ``EVEC_FILE`` should obviously replaced with the actual filename of the PCA run. You should find something like::
 
-           #eigvals:     6.289     3.095     2.693     2.010     1.743     1.690     1.627     1.617     1.591     1.590
-                I001    -0.0192      0.0353     -0.0024     -0.0084     -0.0072      0.0021      0.0046     -0.0007     -0.0064     -0.0001  Ignore_Iran_Zoroastrian(PCA_outlier)
-                I002    -0.0237      0.0372     -0.0018     -0.0133     -0.0058      0.0008      0.0036     -0.0004      0.0018      0.0013  Ignore_Iran_Zoroastrian(PCA_outlier)
-           IREJ-T006    -0.0226      0.0417      0.0045      0.0003      0.0015      0.0070      0.0054     -0.0010      0.0008      0.0003  Iran_Non-Zoroastrian_Fars
-           IREJ-T009    -0.0214      0.0404      0.0024     -0.0064     -0.0026      0.0072      0.0023      0.0015     -0.0035     -0.0006  Iran_Non-Zoroastrian_Fars
-           IREJ-T022    -0.0165      0.0376     -0.0003     -0.0106     -0.0023      0.0077      0.0003      0.0042     -0.0011      0.0015  Iran_Non-Zoroastrian_Fars
-           IREJ-T023    -0.0226      0.0376     -0.0031     -0.0101     -0.0034      0.0067      0.0023      0.0044      0.0015     -0.0001  Iran_Non-Zoroastrian_Fars
-           IREJ-T026    -0.0203      0.0373     -0.0009     -0.0103     -0.0000      0.0056     -0.0002     -0.0055     -0.0012     -0.0007  Iran_Non-Zoroastrian_Fars
-           IREJ-T027    -0.0241      0.0392      0.0025     -0.0072     -0.0046      0.0030     -0.0050      0.0003      0.0008     -0.0026  Iran_Non-Zoroastrian_Fars
+           #eigvals:     6.289     3.095     2.693     2.010
+                I001    -0.0192      0.0353     -0.0024     -0.0084     Ignore_Iran_Zoroastrian(PCA_outlier)
+                I002    -0.0237      0.0372     -0.0018     -0.0133     Ignore_Iran_Zoroastrian(PCA_outlier)
+           IREJ-T006    -0.0226      0.0417      0.0045      0.0003     Iran_Non-Zoroastrian_Fars
+           IREJ-T009    -0.0214      0.0404      0.0024     -0.0064     Iran_Non-Zoroastrian_Fars
+           IREJ-T022    -0.0165      0.0376     -0.0003     -0.0106     Iran_Non-Zoroastrian_Fars
+           IREJ-T023    -0.0226      0.0376     -0.0031     -0.0101     Iran_Non-Zoroastrian_Fars
+           IREJ-T026    -0.0203      0.0373     -0.0009     -0.0103     Iran_Non-Zoroastrian_Fars
+           IREJ-T027    -0.0241      0.0392      0.0025     -0.0072     Iran_Non-Zoroastrian_Fars
 
-The first row contains the eigenvalues for the first 10 principal components (PCs), and all further rows contain the PC coordinates for each individual. The first column contains the name of each individual, the last row the population. To load this dataset with python, we use the pandas_ package, which facilitates working with data in python. To load data using pandas_, use the ``read_csv()`` function.
+The first row contains the eigenvalues for the first 4 principal components (PCs), and all further rows contain the PC coordinates for each individual. The first column contains the name of each individual, the last row the population. To load this dataset with python, we use the pandas_ package, which facilitates working with data in python. To load data using pandas_, use the ``read_csv()`` function.
 
 .. _pandas: https://pandas.pydata.org
 
 .. admonition:: Exercise
 
-  Load one of the two PCA results files with ending ``*.evec``. You need to skip the first row and name the columns manually. Use "Name", "PC1", ... "PC10", "Population" for the column names. Google documentation for ``read_csv()`` to ensure that tabs and spaces are considered field delimiters, that the first row is skipped, and that the column names are correctly entered. Please see the ``02_pca_python`` solution notebook if you need help. You should now have the pca data loaded into a dataframe.
+  Load one of the two PCA results files with ending ``*.evec``. You need to skip the first row and name the columns manually. Use "Name", "PC1", ... "PC4", "Population" for the column names. Google documentation for ``read_csv()`` to ensure that tabs and spaces are considered field delimiters, that the first row is skipped, and that the column names are correctly entered. Please see the ``02_pca_python`` solution notebook if you need help. You should now have the pca data loaded into a dataframe.
 
 You should now have a pandas dataframe which looks like this::
 
-        Name    PC1    PC2     PC3     PC4     PC5     PC6     PC7     PC8     PC9    PC10      Population
-                I001    -0.0192      0.0353     -0.0024     -0.0084     -0.0072      0.0021      0.0046     -0.0007     -0.0064     -0.0001  Ignore_Iran_Zoroastrian(PCA_outlier)
-                I002    -0.0237      0.0372     -0.0018     -0.0133     -0.0058      0.0008      0.0036     -0.0004      0.0018      0.0013  Ignore_Iran_Zoroastrian(PCA_outlier)
-           IREJ-T006    -0.0226      0.0417      0.0045      0.0003      0.0015      0.0070      0.0054     -0.0010      0.0008      0.0003  Iran_Non-Zoroastrian_Fars
-           IREJ-T009    -0.0214      0.0404      0.0024     -0.0064     -0.0026      0.0072      0.0023      0.0015     -0.0035     -0.0006  Iran_Non-Zoroastrian_Fars
-           IREJ-T022    -0.0165      0.0376     -0.0003     -0.0106     -0.0023      0.0077      0.0003      0.0042     -0.0011      0.0015  Iran_Non-Zoroastrian_Fars
-           IREJ-T023    -0.0226      0.0376     -0.0031     -0.0101     -0.0034      0.0067      0.0023      0.0044      0.0015     -0.0001  Iran_Non-Zoroastrian_Fars
-           IREJ-T026    -0.0203      0.0373     -0.0009     -0.0103     -0.0000      0.0056     -0.0002     -0.0055     -0.0012     -0.0007  Iran_Non-Zoroastrian_Fars
-           IREJ-T027    -0.0241      0.0392      0.0025     -0.0072     -0.0046      0.0030     -0.0050      0.0003      0.0008     -0.0026  Iran_Non-Zoroastrian_Fars
+        Name    PC1    PC2     PC3     PC4     Population
+                I001    -0.0192      0.0353     -0.0024     -0.0084	Ignore_Iran_Zoroastrian(PCA_outlier)
+                I002    -0.0237      0.0372     -0.0018     -0.0133	Ignore_Iran_Zoroastrian(PCA_outlier)
+           IREJ-T006    -0.0226      0.0417      0.0045      0.0003	Iran_Non-Zoroastrian_Fars
+           IREJ-T009    -0.0214      0.0404      0.0024     -0.0064	Iran_Non-Zoroastrian_Fars
+           IREJ-T022    -0.0165      0.0376     -0.0003     -0.0106	Iran_Non-Zoroastrian_Fars
+           IREJ-T023    -0.0226      0.0376     -0.0031     -0.0101	Iran_Non-Zoroastrian_Fars
+           IREJ-T026    -0.0203      0.0373     -0.0009     -0.0103	Iran_Non-Zoroastrian_Fars
+           IREJ-T027    -0.0241      0.0392      0.0025     -0.0072	Iran_Non-Zoroastrian_Fars
 
 Let's say you called this dataframe ``pcaDat``. You can now very easily produce a plot of PC1 vs. PC2 for all samples , by running ``plt.scatter(x=pcaDat["PC1"], y=pcaDat["PC2"])``, which in my case yields a boring figure like this:
 
