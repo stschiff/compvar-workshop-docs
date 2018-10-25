@@ -1,5 +1,8 @@
+F Statistics
+============
+
 F3 Statistics
-=============
+-------------
 
 F3 statistics are a useful analytical tool to understand population relationships. F3 statistics, just as F4 and F2 statistics measure allele frequency correlations between populations and were introduced by Nick Patterson in his `Patterson 2012`_
 
@@ -59,7 +62,7 @@ To prepare the ``popfilename``, open a new file using Jupyter and enter::
 
 .. admonition:: Exercise
 
-  Prepare the parameter file with the input data as in the PCA session (see :ref:`PCA_section`) and then run ``qp3pop -p PARAMETER_FILE``, where ``PARAMETERFILE`` should be replaced by your parameter file name. This will take about 3 minutes (see the ``~/share/solutions/bash_commands`` notebook if you need a hint).
+  Prepare the parameter file with the input data as in the PCA session (see :ref:`PCA_section`) and then run ``qp3Pop -p PARAMETER_FILE``, where ``PARAMETERFILE`` should be replaced by your parameter file name. This will take about 3 minutes (see the ``~/share/solutions/bash_commands`` notebook if you need a hint).
 
 The results are in the output that you can view in the Notebook. The crucial bit should look like this::
 
