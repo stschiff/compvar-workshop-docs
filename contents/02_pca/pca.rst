@@ -173,7 +173,7 @@ OK, but how do we systematically show all the populations? There are too many of
 
 You should check that this worked by viewing the resulting ``popListDat`` variable (just type its name into a new Jupyter notebook cell). Now we can produce the full PCA plot, which uses a for loop to cycle through all populations in the ``popListDat`` dataframe, and plots each listed population in turn, with its assigned color and symbol. To prepare, we need a list of colors and symbols. Here, I am using the default color sequence from ``matplotlib`` and a manual sequence of symbols, which for the sake of simplicity I simply put here for you to copy-paste::
 
-  symbolVec = ["8", "s", "p", "P", "*", "h", "H", "+", "x", "X", "D", "d"]
+  symbolVec = ["8", "s", "p", "P", "*", "h", "H", "+", "x", "X", "D", "d", "<", ">", "^", "v"]
   colorVec = [u'#1f77b4', u'#ff7f0e', u'#2ca02c', u'#d62728', u'#9467bd',
               u'#8c564b', u'#e377c2', u'#7f7f7f', u'#bcbd22', u'#17becf']
 
