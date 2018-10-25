@@ -53,6 +53,7 @@ For actually running the analysis, we use a software called ``smartPCA`` from th
   poplistname: <POPULATION_LIST_FILE>.txt
   lsqproject: YES
   numoutevec: 4
+  numthreads: 1
 
 Here, the first three parameters specify the input genotype files, as discussed above. The next two rows specify two output file names, typically with ending ``*.evec`` and ``*.eval``. The parameter line beginning with ``poplistname`` contains a file with a list of populations used for calculating the principal components (see below). The option ``lsqproject`` is important for applications including ancient DNA with lots of missing data, which I will not elaborate on. For the purpose of this workshop, you should use ``lsqproject: YES``. The last option ``numoutevec`` specifies the number of principal components that we compute.
 
