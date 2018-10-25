@@ -65,8 +65,8 @@ So what happens to individuals that are not in populations listed in the populat
 
 For this workshop, I prepared two population lists::
 
-  /home/training/work/share/WestEurasia.poplist.txt
-  /home/training/work/share/AllEurasia.poplist.txt
+  /home/training/share/WestEurasia.poplist.txt
+  /home/training/share/AllEurasia.poplist.txt
 
 As you can tell from the names of the files, they specify two sets of modern populations representing West Eurasia or all of Europe and Asia, respectively.
 
