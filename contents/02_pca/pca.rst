@@ -88,11 +88,11 @@ Now go ahead and prepare a parameter file according to the layout described abov
 
   Run ``smartpca`` with the prepared parameter file.
   
-.. warning:: Runnign ``smartPCA`` with this dataset takes around one hour.
+.. note:: Running ``smartPCA`` with this dataset takes between 15 and 30 minutes.
 
 .. hint:: ``smartpca`` outputs a flurry of log messages that may be useful later. If you run the program within a Jupyter Notebook, you can always go back later and view the log, as it is saved within the notebook. If you choose to run it through a terminal, you should direct the output into a file, e.g. like this ``smartpca -p PARAMS_FILE > output.log``.
 
-To facilitate further processing, I have put the results file into ``~/share/solutions/pca.WestEurasia.*`` and ``~/share/solutions/pca.AllEurasia.*``
+To facilitate further processing, I have put the results file into ``~/share/pca_results/pca.WestEurasia.*`` and ``~/share/pca_results/pca.AllEurasia.*``
 
 Plotting modern populations
 ---------------------------
