@@ -151,7 +151,7 @@ Now, obviously, we would like to highlight the different populations by color. A
 
     plt.scatter(x=pcaDat["PC1"], y=pcaDat["PC2"], label="")
     for pop in ["Finnish", "Sardinian", "Armenian", "BedouinB"]:
-        d = pcaDat[evecDat["Population"] == pop]
+        d = pcaDat[pcaDat["Population"] == pop]
         plt.scatter(x=d["PC1"], y=d["PC2"], label=pop)
     plt.legend()
 
@@ -162,7 +162,7 @@ This sequence of commands gives us:
    :height: 500px
    :align: center
 
-OK, but how do we systematically show all the populations? There are too many of those to separate them all by different colors, or by different symbols, so we need to combine colours and symbols and use all the combinations of them to show all the populations. To do that, we first need to load the population list that we want to focus on for now, which are the same lists as used above for running the PCA. In case of the West Eurasian PCA, you can load the file using ``pd.read_csv("~/work/share/WestEurasia.poplist.txt", names=["Population"]).sort_values(by="Population")``. Next, we need to associate a color number and a symbol number with each population. To keep things simple, I would recommend to simply cycle through all combinations automatically. This code snippet looks a bit magic, but it does the job::
+OK, but how do we systematically show all the populations? There are too many of those to separate them all by different colors, or by different symbols, so we need to combine colours and symbols and use all the combinations of them to show all the populations. To do that, we first need to load the population list that we want to focus on for now, which are the same lists as used above for running the PCA. In case of the West Eurasian PCA, you can load the file using ``pd.read_csv("~/share/WestEurasia.poplist.txt", names=["Population"]).sort_values(by="Population")``. Next, we need to associate a color number and a symbol number with each population. To keep things simple, I would recommend to simply cycle through all combinations automatically. This code snippet looks a bit magic, but it does the job::
 
   nPops = len(popListDat)
   nCols = 8
