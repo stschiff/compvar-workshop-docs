@@ -20,7 +20,8 @@ This is the documentation for the 2018 Workshop delivered at the `Next Generatio
    contents/02_pca/pca
    contents/03_f3stats/f3stats
    contents/04_msmc/msmc
-
+   contents/05_solution_notebooks
+  
 
 Indices and tables
 ==================
