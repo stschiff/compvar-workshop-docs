@@ -6,6 +6,10 @@
 Documentation for the 2018 Workshop on Computational Methods to Analyse Human Genetic Variation
 ===============================================================================================
 
+.. attention::
+
+   Please note that the content of this Workshop is quite outdated. Please check `My Homepage <https://www.stephanschiffels.de/resources>`_ for newer material.
+
 This is the documentation for the 2018 Workshop delivered at the `Next Generation Genomics 2018 Symposium Workshops`_ in Helsinki by `Stephan Schiffels`_
 
 .. _Next Generation Genomics 2018 Symposium Workshops: https://www.helsinki.fi/en/research/doctoral-education/doctoral-schools-and-programmes/doctoral-school-in-health-sciences/doctoral-programme-in-integrative-life-science/next-generation-genomics-2018-symposium-workshops
